@@ -1,0 +1,8 @@
+nome __EMPTY_1
+energia(kcal) Valores\r\npor 100 g de parte edível com exceção do grupo Bebidas alcoólicas (nível 1) cujos valores são expressos por 100 ml de parte edível
+lipidos __EMPTY_5
+hidratos de carbono __EMPTY_11
+açucares __EMPTY_12
+fibra __EMPTY_15
+proteina __EMPTY_16
+sal __EMPTY_17
