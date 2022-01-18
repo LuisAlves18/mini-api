@@ -1,6 +1,7 @@
 const product = require("../models/model_product");
 const dbPortfir = require("../index");
 const wget = require("node-wget");
+const async = require("async");
 
 const addProduct = (req, res) => {
   wget(
@@ -16,28 +17,47 @@ const addProduct = (req, res) => {
         workbook.Sheets[sheet_name_list[0]]
       );
       
-      res.send(xlData);
-      xlData.pop();
+      xlData.shift();
+
+      let stack = [];
+      let products = []; 
+
       xlData.forEach((data) => {
-          console.log(data)
-        const newProduct = new product({
-          code: data.__EMPTY,
-          nome: data.__EMPTY_1,
-          energia: data.__EMPTY_11,
-          lipidos: data.__EMPTY_5,
-          hidratos: data.__EMPTY_11,
-          acucares: data.__EMPTY_12,
-          fibra: data.__EMPTY_15,
-          proteina: data.__EMPTY_16,
-          sal: data.__EMPTY_17,
-        });
-        newProduct.save(function (err, product) {
-          if (err) {
-            res.status(400).send(err);
-          }
-          res.status(200).json(product);
-        });
+        stack.push((callback) => {
+
+          product.find({code: data.__EMPTY}).then(res => {
+            if(res && res.length > 0) {
+             return callback()
+            } else {
+              const newProduct = new product({
+                code: data.__EMPTY,
+                nome: data.__EMPTY_1,
+                energia: data.__EMPTY_11,
+                lipidos: data.__EMPTY_5,
+                hidratos: data.__EMPTY_11,
+                acucares: data.__EMPTY_12,
+                fibra: data.__EMPTY_15,
+                proteina: data.__EMPTY_16,
+                sal: data.__EMPTY_17,
+              });
+              newProduct.save(function (err, product) {
+                if (err) {
+                  return callback(); 
+                }
+                products.push(product);
+                return callback();
+              });
+            }
+          }).catch((err) => {
+            log.error(err)
+            return callback();
+          })
+        })
       });
+
+      async.parallel(stack, () => {
+        res.status(200).json(products)
+      })
     })
   );
 };

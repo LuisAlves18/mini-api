@@ -8,7 +8,7 @@ const products = require('./routes/routes_products');
 app.use(express.json());
 
 
-app.use('/', products);
+app.use('/products', products);
 
 mongoose.connect(
   "mongodb://mgrocery:muf8JKQmyw7zDCYHym0PWGh3O8EKegccH@35.242.162.250:27017/mGrocery",
