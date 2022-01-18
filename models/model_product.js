@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const nutritionalSchema = mongoose.Schema({
+    code: Number,
     nome: String,
     energia: Number,
     lipidos: Number,
